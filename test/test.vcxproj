@@ -118,10 +118,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cholesky_solver.c" />
     <ClCompile Include="gauss_jordan_solver.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cholesky_solver.h" />
     <ClInclude Include="gauss_jordan_solver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
