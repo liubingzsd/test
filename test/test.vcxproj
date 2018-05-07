@@ -121,10 +121,14 @@
     <ClCompile Include="cholesky_solver.c" />
     <ClCompile Include="gauss_jordan_solver.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="mat_math.c" />
+    <ClCompile Include="sv_decomp.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cholesky_solver.h" />
     <ClInclude Include="gauss_jordan_solver.h" />
+    <ClInclude Include="mat_math.h" />
+    <ClInclude Include="sv_decomp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

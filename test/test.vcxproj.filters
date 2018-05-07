@@ -21,6 +21,12 @@
     <ClInclude Include="cholesky_solver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="sv_decomp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mat_math.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -30,6 +36,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="cholesky_solver.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="sv_decomp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mat_math.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
