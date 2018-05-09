@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "mat_math.h"
 #include "sv_decomp.h"
 void ppp(double *a, double *e, double *s, double *v, int m, int n);
 void sss(double *fg, double *cs);
@@ -12,15 +13,16 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 	s = malloc(ka * sizeof(double));
 	e = malloc(ka * sizeof(double));
 	w = malloc(ka * sizeof(double));
-	it = 60; k = n;
+	it = 60;
+	k = n;
 	if ((m - 1) < n)
 	{
-		k = m - 1;
+		k = m - 1;                // k = min(n,m-1)
 	}
 	l = m;
 	if ((n - 2) < m)
 	{
-		l = n - 2;
+		l = n - 2;               // l = min(m,n-2)
 	}
 	if (l < 0)
 	{
@@ -35,12 +37,13 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 	{
 		for (kk = 1; kk <= ll; kk++)
 		{
+			printf("kk = %d \n", kk);
 			if (kk <= k)
 			{
 				d = 0.0;
 				for (i = kk; i <= m; i++)
 				{
-					ix = (i - 1)*n + kk - 1;
+					ix = (i - 1) * n + kk - 1;
 					d = d + a[ix] * a[ix];
 				}
 				s[kk - 1] = sqrt(d);
@@ -62,6 +65,8 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 					}
 					a[ix] = 1.0 + a[ix];
 				}
+				printf("row a \n");
+				mat_printf(a, m, kk);
 				s[kk - 1] = -s[kk - 1];
 			}
 			if (n >= kk + 1)
@@ -110,7 +115,10 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 					if (e[kk] != 0.0)
 					{
 						e[kk - 1] = fabs(e[kk - 1]);
-						if (e[kk]<0.0) e[kk - 1] = -e[kk - 1];
+						if (e[kk] < 0.0)
+						{
+							e[kk - 1] = -e[kk - 1];
+						}
 					}
 					for (i = kk + 1; i <= n; i++)
 					{
@@ -150,6 +158,16 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 			}
 		}
 	}
+
+	for (i = 0; i < m; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			printf("%f ", a[i * n + j]);
+		}
+		printf("\n");
+	}
+
 	mm = n;
 	if ((m + 1) < n)
 	{
@@ -234,6 +252,15 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 			}
 		}
 	}
+	printf("mat u \n");
+	for (i = 0; i < m; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			printf("%f ", u[i * m + j]);
+		}
+		printf("\n");
+	}
 	for (ll = 1; ll <= n; ll++)
 	{
 		kk = n - ll + 1; iz = kk * n + kk - 1;
@@ -263,6 +290,16 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 		}
 		v[iz - n] = 1.0;
 	}
+	printf("mat v \n");
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			printf("%f ", v[i * n + j]);
+		}
+		printf("\n");
+	}
+
 	for (i = 1; i <= m; i++)
 	{
 		for (j = 1; j <= n; j++)
@@ -270,9 +307,18 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 			a[(i - 1)*n + j - 1] = 0.0;
 		}
 	}
+	printf("mat a \n");
+	for (i = 0; i < m; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			printf("%f ", a[i * n + j]);
+		}
+		printf("\n");
+	}
 	m1 = mm;
 	it = 60;
-	while (1 == 1)
+	while (1)
 	{
 		if (mm == 0)
 		{
@@ -496,6 +542,7 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 						fg[1] = -cs[1] * e[i - 1];
 						e[i - 1] = cs[0] * e[i - 1];
 						if ((cs[0] != 1.0) || (cs[1] != 0.0))
+						{
 							for (j = 1; j <= m; j++)
 							{
 								ix = (j - 1)*m + i - 1;
@@ -504,6 +551,8 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 								u[iy] = -cs[1] * u[ix] + cs[0] * u[iy];
 								u[ix] = d;
 							}
+						}
+
 					}
 				}
 			}
@@ -524,12 +573,16 @@ void ppp(double *a, double *e, double *s, double *v, int m, int n)
 		a[(j - 1)*n + j] = e[j - 1];
 	}
 	a[(i - 1)*n + i - 1] = s[i - 1];
-	if (m<n) a[(i - 1)*n + i] = e[i - 1];
+	if (m < n)
+	{
+		a[(i - 1)*n + i] = e[i - 1];
+	}
 	for (i = 1; i <= n - 1; i++)
 	{
 		for (j = i + 1; j <= n; j++)
 		{
-			p = (i - 1)*n + j - 1; q = (j - 1)*n + i - 1;
+			p = (i - 1)*n + j - 1; 
+			q = (j - 1)*n + i - 1;
 			d = v[p]; v[p] = v[q]; v[q] = d;
 		}
 	}
@@ -582,5 +635,25 @@ void sss(double *fg, double *cs)
 	fg[1] = r;
 
 }
+double norm_vector(double *f,int length)
+{
+	int i;
+	double s = 0.0f;
+	for (i = 0; i < length; i++)
+	{
+		s += f[i] * f[i];
+	}
+	s = sqrt(s);
+	return s;
+}
+void householder(double *a,int i,double *p)
+{
+
+}
+
+
+
+
+
 
 

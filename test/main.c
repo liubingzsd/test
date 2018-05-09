@@ -3,18 +3,7 @@
 #include "cholesky_solver.h"
 #include "sv_decomp.h"
 #include "mat_math.h"
-void mat_printf(double *a,int m,int n)
-{
-	int i, j;
-	for (i = 0; i < m; i++)
-	{
-		for (j = 0; j < n; j++)
-		{
-			printf("%13.7e ", *(a + i * n + j));
-		}
-		printf("\n");
-	}
-}
+
 void test_gauss_jordan_solver()
 {
 	int i;
@@ -62,10 +51,11 @@ void test_sv_decomp()
 		{ 2.0,1.0,0.0,2.0 },
 		{ 1.0,-1.0,0.0,1.0 }
 	};
-	double u[4][4], v[3][3], c[4][3], d[3][4];
+	double u[4][4] = {0.0f}, v[3][3], c[4][3], d[3][4];
 	double eps = 0.000001;
 	if (sv_decomp(&a[0][0], 4, 3, &u[0][0], &v[0][0], eps, 5))
 	{
+/*
 		printf("\n");
 		printf("EXAMPLE(1)\n");
 		printf("\n");
@@ -85,8 +75,9 @@ void test_sv_decomp()
 		printf("\n\n");
 		printf("EXAMPLE(2)\n");
 		printf("\n");
-
+*/
 	}
+	/*
 	if (sv_decomp(&b[0][0], 3, 4, &v[0][0], &u[0][0], eps, 5))
 	{
 		printf("MAT U IS:\n");
@@ -104,6 +95,7 @@ void test_sv_decomp()
 		mat_printf(&b[0][0], 3, 4);
 		printf("\n");
 	}
+	*/
 }
 int main()
 {
