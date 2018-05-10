@@ -6,7 +6,7 @@ void mat_printf(double *a, int m, int n)
 	{
 		for (j = 0; j < n; j++)
 		{
-			printf("%13.7e ", *(a + i * n + j));
+			printf("%12.7f ", *(a + i * n + j));
 		}
 		printf("\n");
 	}
@@ -70,7 +70,7 @@ void mm_add(double *a, double *b, double *c, int m, int n)
 		}
 	}
 }
-void vv_mat(double *a, double *b, double *c, int m)
+void vv_mul_mat(double *a, double *b, double *c, int m)
 {
 	int i, j;
 	for (i = 0; i < m; i++)
@@ -80,4 +80,40 @@ void vv_mat(double *a, double *b, double *c, int m)
 			c[i*m + j] = a[i] * b[j];
 		}
 	}
+}
+void vector_create(double *a,int length)
+{
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		a[i] = 0.0f;
+	}
+}
+void sv_mul(double *a,int length,double s)
+{
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		a[i] *= s;
+	}
+}
+void vv_add(double *a, double *b, double *c, int length)
+{
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		c[i] = a[i] + b[i];
+	}
+}
+
+
+void vector_printf(double *a, int length)
+{
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		printf("%12.7f ", a[i]);
+	}
+	printf("\n");
+
 }

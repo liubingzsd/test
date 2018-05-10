@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "mat_math.h"
-#include "sv_decomp.h"
+#include "svd_solver.h"
 void ppp(double *a, double *e, double *s, double *v, int m, int n);
 void sss(double *fg, double *cs);
-bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka)
+bool svd_cmp(double *a, int m, int n, double *u, double *v, double eps, int ka)
 {
 	int i, j, k, l, it, ll, kk, ix, iy, mm, nn, iz, m1, ks;
 	double d, dd, t, sm, sm1, em1, sk, ek, b, c, shh, fg[2], cs[2];
@@ -37,7 +37,6 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 	{
 		for (kk = 1; kk <= ll; kk++)
 		{
-			printf("kk = %d \n", kk);
 			if (kk <= k)
 			{
 				d = 0.0;
@@ -65,8 +64,6 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 					}
 					a[ix] = 1.0 + a[ix];
 				}
-				printf("row a \n");
-				mat_printf(a, m, kk);
 				s[kk - 1] = -s[kk - 1];
 			}
 			if (n >= kk + 1)
@@ -159,15 +156,6 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 		}
 	}
 
-	for (i = 0; i < m; i++)
-	{
-		for (j = 0; j < n; j++)
-		{
-			printf("%f ", a[i * n + j]);
-		}
-		printf("\n");
-	}
-
 	mm = n;
 	if ((m + 1) < n)
 	{
@@ -252,15 +240,7 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 			}
 		}
 	}
-	printf("mat u \n");
-	for (i = 0; i < m; i++)
-	{
-		for (j = 0; j < m; j++)
-		{
-			printf("%f ", u[i * m + j]);
-		}
-		printf("\n");
-	}
+
 	for (ll = 1; ll <= n; ll++)
 	{
 		kk = n - ll + 1; iz = kk * n + kk - 1;
@@ -290,31 +270,12 @@ bool sv_decomp(double *a, int m, int n, double *u, double *v, double eps, int ka
 		}
 		v[iz - n] = 1.0;
 	}
-	printf("mat v \n");
-	for (i = 0; i < n; i++)
-	{
-		for (j = 0; j < n; j++)
-		{
-			printf("%f ", v[i * n + j]);
-		}
-		printf("\n");
-	}
-
 	for (i = 1; i <= m; i++)
 	{
 		for (j = 1; j <= n; j++)
 		{
 			a[(i - 1)*n + j - 1] = 0.0;
 		}
-	}
-	printf("mat a \n");
-	for (i = 0; i < m; i++)
-	{
-		for (j = 0; j < n; j++)
-		{
-			printf("%f ", a[i * n + j]);
-		}
-		printf("\n");
 	}
 	m1 = mm;
 	it = 60;
@@ -565,8 +526,14 @@ void ppp(double *a, double *e, double *s, double *v, int m, int n)
 {
 	int i, j, p, q;
 	double d;
-	if (m >= n) i = n;
-	else i = m;
+	if (m >= n)
+	{
+		i = n;
+	}
+	else
+	{
+		i = m;
+	}
 	for (j = 1; j <= i - 1; j++)
 	{
 		a[(j - 1)*n + j - 1] = s[j - 1];
@@ -646,14 +613,216 @@ double norm_vector(double *f,int length)
 	s = sqrt(s);
 	return s;
 }
-void householder(double *a,int i,double *p)
+void householder(double *a,int length,double *p)
 {
+	double e[10] = { 0.0f };
+	double norm_vec;
+	double w_w[10 * 10] = {0};
+	int i,j;
+	vector_create(e, length);
+	e[0] = 1.0f;
+	norm_vec = norm_vector(a, length);
+	if (a[0] < 0)
+	{
+		norm_vec = -norm_vec;
+	}
+	sv_mul(e, length, -norm_vec);
+	vv_add(a,e,a,length);
+	norm_vec = norm_vector(a, length);
+	sv_mul(a,length,1/norm_vec);
+	vv_mul_mat(a, a, w_w,length);
+	for (i = 0; i < length; i++)
+	{
+		for (j = 0; j < length;j++)
+		{
+			if (i == j)
+			{
+				p[i * length + j] = 1.0f - 2.0f * w_w[i*length + j];
+			}
+			else
+			{
+				p[i * length + j] = -2.0f * w_w[i*length + j];
+			}
+		}
+	}
+}
+
+bool svd_ginv(double *a,int m,int n,double *ginv,double eps,double *u,double *v,int ka)
+{
+	int i, j, k, l, t, p, q, f;
+	if (svd_cmp(a, m, n, u, v, eps, ka))
+	{
+		j = n;
+		if (m < n)
+		{
+			j = m;
+		}
+		j = j - 1;
+		k = 0;
+		while ((k <= j) && (a[k*n + k] != 0.0))
+		{
+			k = k + 1;
+		}
+		k = k - 1;
+		for (i = 0; i < n; i++)
+		{
+			for (j = 0; j < m; j++)
+			{
+				t = i * m + j; 
+				ginv[t] = 0.0f;
+				for (l = 0; l <= k; l++)
+				{
+					f = l * n + i; p = j * m + l; q = l * n + l;
+					ginv[t] += v[f] * u[p] / a[q];
+				}
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 
 }
 
 
 
+/*
+ a*x = b
+ a = u*sigma*v;
+ u[m][n]
+ v[n][n];
+*/
+bool svd_solver(double *a,int m,int n,double *b,double *x,double *ginv,double eps,double *u,double *v,int ka)
+{
+	int i, j;
+	if (svd_ginv(a, m, n, ginv, eps, u, v, ka))
+	{
+		for (i = 0; i < n; i++)
+		{
+			x[i] = 0.0;
+			for (j = 0; j <= m - 1; j++)
+			{
+				x[i] += ginv[i*m + j] * b[j];
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 
 
+void test_svd_cmp()
+{
+	double a[4][3] = {
+		{ 1.0,1.0,-1.0 },
+		{ 2.0,1.0,0.0 },
+		{ 1.0,-1.0,0.0 },
+		{ -1.0,2.0,1.0 }
+	};
+	double b[3][4] = {
+		{ 1.0,1.0,-1.0,-1.0 },
+		{ 2.0,1.0,0.0,2.0 },
+		{ 1.0,-1.0,0.0,1.0 }
+	};
+	double u[4][4] = { 0.0f }, v[3][3], c[4][3], d[3][4];
+	double eps = 0.000001;
+	if (svd_cmp((double *)a, 4, 3, (double *)u, (double *)v, eps, 5))
+	{
 
+		printf("\n");
+		printf("EXAMPLE(1)\n");
+		printf("\n");
+		printf("MAT U IS:\n");
+		mat_printf(&u[0][0], 4, 4);
+		printf("\n");
+		printf("MAT V IS:\n");
+		mat_printf(&v[0][0], 3, 3);
+		printf("\n");
+		printf("MAT A IS:\n");
+		mat_printf(&a[0][0], 4, 3);
+		printf("\n\n");
+		printf("MAT UAV IS:\n");
+		mm_mul(&u[0][0], &a[0][0], &c[0][0], 4, 4, 3);
+		mm_mul(&c[0][0], &v[0][0], &a[0][0], 4, 3, 3);
+		mat_printf(&a[0][0], 4, 3);
+		printf("\n\n");
+		printf("EXAMPLE(2)\n");
+		printf("\n");
+	}
 
+	if (svd_cmp(&b[0][0], 3, 4, &v[0][0], &u[0][0], eps, 5))
+	{
+		printf("MAT U IS:\n");
+		mat_printf(&v[0][0], 3, 3);
+		printf("\n");
+		printf("MAT V IS:\n");
+		mat_printf(&u[0][0], 4, 4);
+		printf("\n");
+		printf("MAT B IS:\n");
+		mat_printf(&b[0][0], 3, 4);
+		printf("\n\n");
+		printf("MAT UBV IS:\n");
+		mm_mul(&v[0][0], &b[0][0], &d[0][0], 3, 3, 4);
+		mm_mul(&d[0][0], &u[0][0], &b[0][0], 3, 4, 4);
+		mat_printf(&b[0][0], 3, 4);
+		printf("\n");
+	}
+}
+void test_svd_ginv()
+{
+	int m, n, ka;
+	static double a[5][4] = {
+		{ 1.0,2.0,3.0,4.0 },
+		{ 6.0,7.0,8.0,9.0 },
+		{ 1.0,2.0,13.0,0.0 },
+		{ 16.0,17.0,8.0,9.0 },
+		{ 2.0,4.0,3.0,4.0 } };
+	double ginv[4][5], c[5][4], u[5][5], v[4][4];
+	double eps = 0.000001;;
+	m = 5; n = 4; ka = 6; 
+	printf("test svd_ginv \n");
+	printf("MAT A IS:\n");
+	mat_printf((double *)a, m, n);
+	printf("\n");
+	printf("MAT A+ IS:\n");
+	if (svd_ginv((double *)a, m, n, (double *)ginv, eps, (double *)u, (double *)v, ka))
+	{
+		mat_printf((double *)ginv, n, m);
+	}
+	printf("MAT A++ IS:\n");
+	if (svd_ginv((double *)ginv, n, m, (double *)c, eps, (double *)v, (double *)u, ka))
+	{
+		mat_printf((double *)c, m, n);
+	}	
+}
+
+void test_svd_solver()
+{
+	int i, m, n, ka;
+	double x[3], ginv[3][4], u[4][4], v[3][3];
+	double a[4][3] = { 
+		{ 1.0,1.0,-1.0 },
+		{ 2.0,1.0,0.0 },
+		{ 1.0,-1.0,0.0 },
+		{ -1.0,2.0,1.0 } 
+	};
+	double b[4] = {2.0,-3.0,1.0,4.0 };
+	double eps = 0.000001;
+	m = 4; n = 3; ka = 5;
+	if (svd_solver((double *)a, m, n, b, x, (double *)ginv, eps, (double *)u, (double *)v, ka));
+	{
+		for (i = 0; i < 3; i++)
+		{
+			printf("x(%d) = %12.7f\n", i, x[i]);
+		}
+		printf("\n");
+		printf("The ginv of mat a is  :\n");
+		mat_printf((double *)ginv, n, m);
+		printf("\n");
+	}
+}

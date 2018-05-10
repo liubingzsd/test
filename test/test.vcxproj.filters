@@ -21,10 +21,13 @@
     <ClInclude Include="cholesky_solver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="sv_decomp.h">
+    <ClInclude Include="mat_math.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="mat_math.h">
+    <ClInclude Include="svd_solver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="qr_solver.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,10 +41,13 @@
     <ClCompile Include="cholesky_solver.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="sv_decomp.c">
+    <ClCompile Include="mat_math.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="mat_math.c">
+    <ClCompile Include="svd_solver.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="qr_solver.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
