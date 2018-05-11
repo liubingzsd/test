@@ -6,10 +6,13 @@
 
 int main()
 {
-	test_gauss_jordan_solver();
-	test_cholesky_solver();
+//	test_gauss_jordan_solver();
+//	test_cholesky_solver();
 	test_svd_cmp();
-	test_qr_solver();
+//	test_qr_solver();
+//	test_svd_ginv();
+//	test_svd_solver();
 	test_svd_ginv();
-	test_svd_solver();
+	printf("**********  test module finished ***************\n");
+	return 0;
 }

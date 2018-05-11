@@ -48,6 +48,20 @@ void mm_mul(double *a, double *b, double *c ,int m, int n, int k)
 		}
 	}
 }
+void mv_mul(double *a, double *b, double *c, int m, int n)
+{
+	int i, j, l, u;
+	double s;
+	for (i = 0; i < m; i++)
+	{
+		c[i] = 0;
+		for (j = 0; j < n; j++)
+		{
+			u = i * n + j;
+			c[i] += a[u] * b[j];
+		}
+	}
+}
 void mm_sub(double *a, double *b, double *c, int m, int n)
 {
 	int i, j;

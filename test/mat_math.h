@@ -11,4 +11,5 @@ void vv_mul_mat(double *a, double *b, double *c, int m);
 void mm_add(double *a, double *b, double *c, int m, int n);
 void mm_sub(double *a, double *b, double *c, int m, int n);
 void vector_printf(double *a, int length);
+void mv_mul(double *a, double *b, double *c, int m, int n);
 #endif
