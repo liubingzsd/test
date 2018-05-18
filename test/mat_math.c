@@ -1,4 +1,18 @@
 #include "mat_math.h"
+
+void mat_printf_float(float *mat, int m, int n)
+{
+	int i, j;
+	for (i = 0; i < m; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			printf("%f ", *(mat + i * n + j));
+		}
+		printf("\n");
+	}
+}
+
 void mat_printf(double *a, int m, int n)
 {
 	int i, j;
@@ -50,8 +64,7 @@ void mm_mul(double *a, double *b, double *c ,int m, int n, int k)
 }
 void mv_mul(double *a, double *b, double *c, int m, int n)
 {
-	int i, j, l, u;
-	double s;
+	int i, j, u;
 	for (i = 0; i < m; i++)
 	{
 		c[i] = 0;

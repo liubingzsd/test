@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="solver">
+      <UniqueIdentifier>{42ea30a5-02f2-46ae-89c4-21cd2f9ea1b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NewFilter1">
+      <UniqueIdentifier>{2c36b5e7-e4f1-4d6c-9480-88d35731911a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gauss_jordan_solver.h">
@@ -28,6 +34,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="qr_solver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="file_wr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ransac.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sobel_filter.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -48,6 +69,27 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="qr_solver.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="file_wr.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ransac.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="image.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="harris_corner.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_2d.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="kernel.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="sobel_filter.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
