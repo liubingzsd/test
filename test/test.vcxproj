@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cholesky_solver.c" />
+    <ClCompile Include="feature_point.c" />
     <ClCompile Include="file_wr.c" />
     <ClCompile Include="filter_2d.c" />
     <ClCompile Include="gauss_jordan_solver.c" />
@@ -136,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cholesky_solver.h" />
+    <ClInclude Include="feature_point.h" />
     <ClInclude Include="file_wr.h" />
     <ClInclude Include="gauss_jordan_solver.h" />
     <ClInclude Include="harris_corner.h" />

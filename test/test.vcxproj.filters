@@ -54,6 +54,9 @@
     <ClInclude Include="harris_corner.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="feature_point.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -96,6 +99,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="harris_corner.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="feature_point.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

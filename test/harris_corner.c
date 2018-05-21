@@ -1,49 +1,13 @@
+#include <time.h>
 #include "image.h"
 #include "kernel.h"
+#include "feature_point.h"
 #include "harris_corner.h"
 
 int8_t fx[9] = {-1,0,1,-1,0,1,-1,0,1};
 int8_t fy[9] = {-1,-1,-1,0,0,0,1,1,1};
 
-
-float r_max = 0;
-/**/
-typedef struct
-{
-	uint32_t num;
-	uint32_t buf_size;
-	uint32_t *buf;
-}feature_point_t;
-
-void feature_point_create(feature_point_t *point,int m,int n)
-{
-	point->buf_size = sizeof(uint32_t) * m * n * 2;
-	point->buf = malloc(point->buf_size);
-	point->num = 0;
-	if (point->buf)
-	{
-//		printf("memory allocated at 0x%x \n", point->buf);
-	}
-	else
-	{
-		printf("___func___ feature_point_create \n");
-		printf("memory allocated failed \n");
-	}
-}
-void feature_point_free(feature_point_t *point)
-{
-	if (point->buf)
-	{
-		free(point->buf);
-	}
-	point->buf = NULL;
-}
-void printf_feature_point_to_file(feature_point_t *point)
-{
-
-}
-
-void harris_corner_select(image_t *image, feature_point_t *point, float thres)
+void harris_corner_select(harris_corner_detector_t *detector,image_t *image)
 {
 	float *image_buf = (float *)image->buf;
 	float tmp;
@@ -62,19 +26,19 @@ void harris_corner_select(image_t *image, feature_point_t *point, float thres)
 			val[5] = image_buf[(i + 1)*image->h + j - 1];
 			val[6] = image_buf[(i + 1)*image->h + j];
 			val[7] = image_buf[(i + 1)*image->h + j + 1];
-			if (tmp > thres * r_max && tmp > val[0] && tmp > val[1] && tmp > val[2] && tmp > val[3] && tmp > val[4] && tmp > val[5] && tmp > val[6] && tmp > val[7])
+			if (tmp > detector->thres * detector->response_max_val && tmp > val[0] && tmp > val[1] && tmp > val[2] && tmp > val[3] && tmp > val[4] && tmp > val[5] && tmp > val[6] && tmp > val[7])
 			{
-				point->buf[point->num] = i;
-				point->buf[point->num + 1] = j;
-				point->num += 2;
+				detector->point.buf[2 * detector->point.num] = i;
+				detector->point.buf[2 * detector->point.num + 1] = j;
+				detector->point.num += 1;
 				printf("%d %d \n", i + 5, j + 5);
 			}
 		}
 	}
-	printf("point num is %d \n", point->num/2);
+	printf("detector point num is %d \n", detector->point.num);
 }
 
-void det_of_mat(image_t *dxx_g, image_t *dyy_g, image_t *dxy_g, feature_point_t *point, float thres)
+void det_of_mat(harris_corner_detector_t *detector,image_t *dxx_g, image_t *dyy_g, image_t *dxy_g)
 {
 	image_t r;
 	int i, j, idx;
@@ -93,15 +57,18 @@ void det_of_mat(image_t *dxx_g, image_t *dyy_g, image_t *dxy_g, feature_point_t 
 			a = dxx_g_buf[idx];
 			b = dxy_g_buf[idx];
 			c = dyy_g_buf[idx];
-			r_buf[idx] = a * c - b * b - 0.06*(a + c)*(a + c);
-			if (r_buf[idx] > r_max)
+			r_buf[idx] = a * c - b * b - detector->k*(a + c)*(a + c);
+			if (r_buf[idx] > detector->response_max_val)
 			{
-				r_max = r_buf[idx];
+				detector->response_max_val = r_buf[idx];
 			}
 		}
 	}
 	write_image_data_to_file_float(str,&r);
-	harris_corner_select(&r, point, thres);
+	harris_corner_select(detector,&r);
+	image_free(dxx_g);
+	image_free(dxy_g);
+	image_free(dyy_g);
 	image_free(&r);
 }
 
@@ -144,7 +111,7 @@ void harris_corner_calc_products_of_image_gradients(image_t *dx,image_t *dy,imag
 
 }
 
-void harris_corner_gauss_filter(image_t *dxx,image_t *dyy,image_t *dxy,kernel_t *kernel,feature_point_t *point,float thres)
+void harris_corner_gauss_filter(harris_corner_detector_t *detector,image_t *dxx,image_t *dyy,image_t *dxy,kernel_t *kernel)
 {
 	uint8_t border = kernel->size - 1;
 	image_t dxx_g, dyy_g, dxy_g;
@@ -157,17 +124,14 @@ void harris_corner_gauss_filter(image_t *dxx,image_t *dyy,image_t *dxy,kernel_t 
 	image_conv_kernel_f32_f32(dxx, &dxx_g, kernel);
 	image_conv_kernel_f32_f32(dyy, &dyy_g, kernel);
 	image_conv_kernel_f32_f32(dxy, &dxy_g, kernel);
-//	write_image_data_to_file_float(str1,&dxx_g);
-//	write_image_data_to_file_float(str2,&dxy_g);
-//	write_image_data_to_file_float(str3,&dyy_g);
-	det_of_mat(&dxx_g, &dyy_g, &dxy_g,point,thres);
+	det_of_mat(detector,&dxx_g, &dyy_g, &dxy_g);
 	image_free(dxx);
 	image_free(dyy);
 	image_free(dxy);
 }
 
 
-void harris_corner(image_t *img,int8_t *kx,int8_t *ky,uint8_t size,kernel_t *kernel,feature_point_t *point,float thres)
+void harris_corner(harris_corner_detector_t *detector,image_t *img,int8_t *kx,int8_t *ky,uint8_t size,kernel_t *kernel)
 {
 	uint8_t border = size - 1;
 	image_t dx, dy, dxx, dyy, dxy;
@@ -178,22 +142,29 @@ void harris_corner(image_t *img,int8_t *kx,int8_t *ky,uint8_t size,kernel_t *ker
 	image_create(&dxy, img->w - border, img->h - border, IMAGE_F32);
 	harris_corner_calc_image_gradients(img,&dx,&dy,kx,ky,size);
 	harris_corner_calc_products_of_image_gradients(&dx, &dy, &dxx, &dyy, &dxy);
-	harris_corner_gauss_filter(&dxx,&dyy,&dxy,kernel,point,thres);
+	harris_corner_gauss_filter(detector,&dxx,&dyy,&dxy,kernel);
 }
 
+void harris_corner_detector_init(harris_corner_detector_t *detector)
+{
+	detector->point.num = 0;
+	detector->thres = 0.01;
+	detector->response_max_val = 0;
+	detector->k = 0.06;
+}
+
+
 void test_harris_corner()
-{	
+{
+	int i, test_time = 10;
 	int m = 480;
 	int n = 640;
 	kernel_t kernel;
-	feature_point_t point;
+	harris_corner_detector_t detector;
 	uint8_t kernel_size = 7;
 	float sigma = 1.0f;
-	float thres = 0.01;
-	image_t image, image1, image2;
+	image_t image;
 	image_create(&image, m, n, IMAGE_GRAYSCALE);
-	image_create(&image1, m - 1, n - 1, IMAGE_GRADIENT);
-	image_create(&image2, m - 1, n - 1, IMAGE_GRADIENT);
 	FILE *fp = fopen("data.dat", "r");
 	if (fp == NULL)
 	{
@@ -204,9 +175,16 @@ void test_harris_corner()
 		read_data_from_file_uint8(fp, image.buf, m, n);
 	}
 	fclose(fp);
-
-	feature_point_create(&point, m, n);
-	kernel_create(&kernel,kernel_size,KERNEL_F32);
-	gauss_kernel_2d(&kernel, sigma, sigma);
-	harris_corner(&image, fx, fy, 3,&kernel,&point,thres);
+	harris_corner_detector_init(&detector);
+	for (i = 0; i < 1; i++)
+	{
+		clock_t start_time = clock();
+		kernel_create(&kernel, kernel_size, KERNEL_F32);
+		gauss_kernel_2d(&kernel, sigma, sigma);
+		harris_corner(&detector,&image, fx, fy, 3, &kernel);
+		clock_t end_time = clock();
+		printf("time = %f \n", (float)(end_time - start_time) / CLOCKS_PER_SEC * 1000);
+	}
+	image_free(&image);
+	kernel_free(&kernel);
 }
