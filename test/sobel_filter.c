@@ -36,6 +36,7 @@ void calc_sobel_gx(image_t *img,image_t *img1,int8_t *kernel)
 			}
 
 		}
+
 	}
 }
 void calc_sobel_gy(image_t *img, image_t *img1,int8_t *kernel)
@@ -93,16 +94,18 @@ void calc_sobel_g(image_t *dx,image_t *dy, image_t *dst)
 }
 void sobel_filter(image_t *img,image_t *dst,int8_t *x_kernel,int8_t *y_kernel)
 {
+	char str[] = "sobel_gx_test.dat";
 	image_t image_dx, image_dy;
 	image_create(&image_dx, img->w - 2, img->h - 2, IMAGE_GRADIENT);
 	image_create(&image_dy, img->w - 2, img->h - 2, IMAGE_GRADIENT);
 	calc_sobel_gx(img, &image_dx, x_kernel);
+	write_image_data_to_file_int16(str, &image_dx);
 	calc_sobel_gy(img, &image_dy, y_kernel);
 	calc_sobel_g(&image_dx,&image_dy,dst);
 	image_free(&image_dx);
 	image_free(&image_dy);
 }
-
+/*
 void test_sobel()
 {
 	printf("test sobel filter\n");
@@ -110,7 +113,7 @@ void test_sobel()
 	int n = 640;
 	image_t image, image_dx, image_dy,dst;
 	image_create(&image, m, n, IMAGE_GRAYSCALE);
-	image_create(&dst, m - 2, n - 2, IMAGE_GRAYSCALE);
+	image_create(&dst, m - 2, n - 2, IMAGE_GRADIENT);
 	image_create(&image_dx, m - 2, n - 2, IMAGE_GRADIENT);
 	image_create(&image_dy, m - 2, n - 2, IMAGE_GRADIENT);
 	FILE *fp = fopen("data.dat", "r");
@@ -126,9 +129,36 @@ void test_sobel()
 	}
 	fclose(fp);
 	sobel_filter(&image, &dst, gx, gy);
-	write_image_data_to_file_uint8(str1,&dst);
+	write_image_data_to_file_int16(str1,&dst);
 	image_free(&image);
 	image_free(&dst);
 }
+*/
+
+void test_sobel()
+{
+	printf("test sobel filter\n");
+	int m = 480;
+	int n = 640;
+	image_t image,dst;
+	image_create(&image, m, n, IMAGE_GRAYSCALE);
+	image_create(&dst, m - 2, n - 2, IMAGE_GRADIENT);
+	FILE *fp = fopen("data.dat", "r");
+	char str1[] = "sobel_filter_gx.dat";
+	if (fp == NULL)
+	{
+		printf("NO file \n");
+	}
+	else
+	{
+		read_data_from_file_uint8(fp, image.buf, m, n);
+	}
+	fclose(fp);
+	image_conv_uint8_int16(&image, &dst, gx, 3);
+	write_image_data_to_file_int16(str1, &dst);
+	image_free(&image);
+	image_free(&dst);
+}
+
 
 

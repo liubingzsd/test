@@ -8,6 +8,7 @@
 #include "image.h"
 #include "sobel_filter.h"
 #include "kernel.h"
+#include "harris_corner.h"
 int main()
 {
 //	test_gauss_jordan_solver();
@@ -24,7 +25,8 @@ int main()
 //	test_file_wr_malloc();
 //	test_image();
 //	test_sobel();
-	test_filter_kernel();
+//	test_filter_kernel();
+	test_harris_corner();
 	printf("**********  test module finished ***************\n");
 	return 0;
 }

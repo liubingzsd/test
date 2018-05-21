@@ -2,12 +2,13 @@
 #define _IMAGE_H_
 #include <stdio.h>
 #include <stdint.h>
-
+#include "kernel.h"
 enum image_type {
 	IMAGE_YUV422,     ///< UYVY format (uint16 per pixel)
 	IMAGE_GRAYSCALE,  ///< Grayscale image with only the Y part (uint8 per pixel)
 	IMAGE_JPEG,       ///< An JPEG encoded image (not per pixel encoded)
-	IMAGE_GRADIENT    ///< An image gradient (int16 per pixel)
+	IMAGE_GRADIENT,    ///< An image gradient (int16 per pixel)
+	IMAGE_F32
 };
 
 typedef struct
@@ -37,5 +38,10 @@ void image_free(image_t *img);
 void image_create(image_t *img, uint16_t width, uint16_t height, enum image_type type);
 void write_image_data_to_file_uint8(char *str, image_t *img);
 void write_image_data_to_file_int16(char *str, image_t *img);
+void write_image_data_to_file_float(char *str, image_t *img);
+void image_conv_uint8_int16(image_t *img, image_t *img1, int8_t *ker, uint8_t ker_size);
+void image_conv_int16_f32(image_t *img, image_t *img1, float *ker, uint8_t ker_size);
+void image_conv_kernel_f32_f32(image_t *img, image_t *img1, kernel_t *kernel);
+void image_conv_kernel_int16_f32(image_t *img, image_t *img1, kernel_t *kernel);
 
 #endif
