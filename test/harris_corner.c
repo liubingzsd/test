@@ -115,9 +115,6 @@ void harris_corner_gauss_filter(harris_corner_detector_t *detector,image_t *dxx,
 {
 	uint8_t border = kernel->size - 1;
 	image_t dxx_g, dyy_g, dxy_g;
-	char str1[] = "dxx_g.dat";
-	char str2[] = "dxy_g.dat";
-	char str3[] = "dyy_g.dat";
 	image_create(&dxx_g, dxx->w - border, dxx->h - border, IMAGE_F32);
 	image_create(&dyy_g, dyy->w - border, dyy->h - border, IMAGE_F32);
 	image_create(&dxy_g, dxy->w - border, dxy->h - border, IMAGE_F32);
@@ -165,7 +162,8 @@ void test_harris_corner()
 	float sigma = 1.0f;
 	image_t image;
 	image_create(&image, m, n, IMAGE_GRAYSCALE);
-	FILE *fp = fopen("data.dat", "r");
+	FILE *fp = NULL;
+	fp = fopen("data.dat", "r");
 	if (fp == NULL)
 	{
 		printf("NO file \n");
@@ -175,12 +173,13 @@ void test_harris_corner()
 		read_data_from_file_uint8(fp, image.buf, m, n);
 	}
 	fclose(fp);
-	harris_corner_detector_init(&detector);
-	for (i = 0; i < 1; i++)
+
+	kernel_create(&kernel, kernel_size, KERNEL_F32);
+	gauss_kernel_2d(&kernel, sigma, sigma);
+	for (i = 0; i < 10; i++)
 	{
+		harris_corner_detector_init(&detector);
 		clock_t start_time = clock();
-		kernel_create(&kernel, kernel_size, KERNEL_F32);
-		gauss_kernel_2d(&kernel, sigma, sigma);
 		harris_corner(&detector,&image, fx, fy, 3, &kernel);
 		clock_t end_time = clock();
 		printf("time = %f \n", (float)(end_time - start_time) / CLOCKS_PER_SEC * 1000);

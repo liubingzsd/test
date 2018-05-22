@@ -44,11 +44,11 @@ int test_filter_2d()
 	srand(time(NULL));
 
 	printf("enter row and column for array1\n");
-	scanf("%d%d", &r1, &c1);
+	scanf_s("%d%d", &r1, &c1);
 	printf("enter row and column for exp\n");
-	scanf("%d%d", &r2, &c2);
+	scanf_s("%d%d", &r2, &c2);
 	printf("enter sigma for exp\n");
-	scanf("%f", &sigma);
+	scanf_s("%f", &sigma);
 
 	r3 = (r1 - r2) + 1;
 	c3 = (c1 - c2) + 1;

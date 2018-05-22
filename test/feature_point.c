@@ -1,3 +1,4 @@
+#include "file_wr.h"
 #include "feature_point.h"
 
 void write_feature_point_data_to_file(char *str,feature_point_t *point)

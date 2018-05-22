@@ -129,6 +129,7 @@
     <ClCompile Include="image.c" />
     <ClCompile Include="kernel.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="match.c" />
     <ClCompile Include="mat_math.c" />
     <ClCompile Include="qr_solver.c" />
     <ClCompile Include="ransac.c" />
@@ -143,6 +144,7 @@
     <ClInclude Include="harris_corner.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="kernel.h" />
+    <ClInclude Include="match.h" />
     <ClInclude Include="mat_math.h" />
     <ClInclude Include="qr_solver.h" />
     <ClInclude Include="ransac.h" />

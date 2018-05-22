@@ -32,7 +32,8 @@ void write_image_data_to_file_int16(char *str, image_t *img)
 
 void write_image_data_to_file_float(char *str, image_t *img)
 {
-	FILE *fp1 = fopen(str, "w+");
+	FILE *fp1 = NULL;
+	fp1 = fopen(str, "w+");
 	if (fp1 == NULL)
 	{
 		printf("NO file \n");
@@ -81,14 +82,22 @@ void image_free(image_t *img)
 {
 	if (img->buf != NULL) {
 		free(img->buf);
-		img->buf = NULL;
 	}
-	else
-	{
-		img->buf = NULL;
-	}
+	img->buf = NULL;
 }
 
+int image_calc_kernel_int(image_t *image,kernel_t *kernel,int idx,int jdx)
+{
+	int tmp = 0;
+
+	return tmp;
+}
+
+float image_calc_kernel_float(image_t *image, kernel_t *kernel,int idx, int jdx)
+{
+	float tmp = 0;
+	return tmp;
+}
 
 void image_conv(image_t *img,image_t *img1,int8_t *ker,int ker_size)
 {

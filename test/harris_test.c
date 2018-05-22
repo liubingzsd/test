@@ -63,9 +63,9 @@ int test() {
 	if ((tur[0] != 'P' && tur[1] != '5') || (tur[0] != 'P' && tur[1] != '2')) {
 		printf("wrong file type");
 	}
-	fscanf(ptr, "%d", &satir1);
-	fscanf(ptr, "%d", &sutun1);
-	fscanf(ptr, "%d", &maxRenk);
+	fscanf_s(ptr, "%d", &satir1);
+	fscanf_s(ptr, "%d", &sutun1);
+	fscanf_s(ptr, "%d", &maxRenk);
 
 	dizi1 = (int **)calloc(satir1, sizeof(int));
 	if (dizi1)
@@ -74,12 +74,12 @@ int test() {
 	if (dizi1[i])
 		for (i = 0; i<satir1; i++)
 			for (j = 0; j<sutun1; j++)
-				fscanf(ptr, "%d", &dizi1[i][j]);
+				fscanf_s(ptr, "%d", &dizi1[i][j]);
 
 	printf("enter row and column for exp\n");
-	scanf("%d%d", &satir2, &sutun2);
+	scanf_s("%d%d", &satir2, &sutun2);
 	printf("enter sigma");
-	scanf("%f", &sigma);
+	scanf_s("%f", &sigma);
 	x = (satir1 - satir2) + 1;
 	y = (sutun1 - sutun2) + 1;
 
@@ -146,7 +146,7 @@ int test() {
 		Sxy = S(Ixy, dizi2, satir3, sutun3, satir2, sutun2);
 
 	printf("enter treshold:");
-	scanf("%lf", &trash);
+	scanf_s("%lf", &trash);
 	printf("%d %d", satir3, sutun3);
 	//R 
 
@@ -163,7 +163,7 @@ int test() {
 			if (R[i][j]>trash)
 				dizi1[i + 10][j + 10] = 255;
 	printf("%d %d", satir3, sutun3);
-	if ((ptr = fopen("D:\\sonHalixx1.pgm", "wb")) == NULL)
+	if ((ptr = fopen_s(ptr,"D:\\sonHalixx1.pgm", "wb")) == NULL)
 		printf("cannot open file.");
 	else {
 		fprintf(ptr, "%s ", tur);

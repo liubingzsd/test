@@ -25,5 +25,6 @@ typedef struct
 void kernel_create(kernel_t *kernel,uint8_t size, enum kernel_type type);
 void gauss_kernel_2d(kernel_t *kernel, float sigma1, float sigma2);
 void calc_gauss_ker_2d(float *ker, int size, float sigma1, float sigma2);
+void kernel_free(kernel_t *kernel);
 void test_filter_kernel();
 #endif

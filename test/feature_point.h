@@ -13,5 +13,4 @@ typedef struct
 void test_feature_point();
 void write_feature_point_data_to_file(char *str, feature_point_t *point);
 
-
 #endif

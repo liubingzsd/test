@@ -57,6 +57,9 @@
     <ClInclude Include="feature_point.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="match.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -102,6 +105,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="feature_point.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="match.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

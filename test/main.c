@@ -8,6 +8,7 @@
 #include "image.h"
 #include "sobel_filter.h"
 #include "kernel.h"
+#include "match.h"
 #include "harris_corner.h"
 int main()
 {
@@ -26,7 +27,8 @@ int main()
 //	test_image();
 //	test_sobel();
 //	test_filter_kernel();
-	test_harris_corner();
+//	test_harris_corner();
+	test_sad();
 	printf("**********  test module finished ***************\n");
 	return 0;
 }
