@@ -98,6 +98,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -122,17 +123,19 @@
     <ClCompile Include="cholesky_solver.c" />
     <ClCompile Include="feature_point.c" />
     <ClCompile Include="file_wr.c" />
-    <ClCompile Include="filter_2d.c" />
     <ClCompile Include="gauss_jordan_solver.c" />
     <ClCompile Include="harris_corner.c" />
-    <ClCompile Include="harris_test.c" />
     <ClCompile Include="image.c" />
+    <ClCompile Include="image_filter.c" />
+    <ClCompile Include="kd_tree.c" />
     <ClCompile Include="kernel.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="mat.c" />
     <ClCompile Include="match.c" />
     <ClCompile Include="mat_math.c" />
     <ClCompile Include="qr_solver.c" />
     <ClCompile Include="ransac.c" />
+    <ClCompile Include="sift_test.cpp" />
     <ClCompile Include="sobel_filter.c" />
     <ClCompile Include="svd_solver.c" />
   </ItemGroup>
@@ -143,12 +146,16 @@
     <ClInclude Include="gauss_jordan_solver.h" />
     <ClInclude Include="harris_corner.h" />
     <ClInclude Include="image.h" />
+    <ClInclude Include="image_filter.h" />
+    <ClInclude Include="kd_tree.h" />
     <ClInclude Include="kernel.h" />
+    <ClInclude Include="mat.h" />
     <ClInclude Include="match.h" />
     <ClInclude Include="mat_math.h" />
     <ClInclude Include="qr_solver.h" />
     <ClInclude Include="ransac.h" />
     <ClInclude Include="sobel_filter.h" />
+    <ClInclude Include="sift_test.h" />
     <ClInclude Include="svd_solver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,13 @@
+#include <stdint.h>
 #include "mat_math.h"
+
+float *mat_create_f32(uint16_t rows,uint16_t cols)
+{
+	float *mat = NULL;
+	mat = malloc(sizeof(uint16_t) * rows * cols);
+	return mat;
+}
+
 
 void mat_printf_float(float *mat, int m, int n)
 {
@@ -8,6 +17,45 @@ void mat_printf_float(float *mat, int m, int n)
 		for (j = 0; j < n; j++)
 		{
 			printf("%f ", *(mat + i * n + j));
+		}
+		printf("\n");
+	}
+}
+
+void mat_printf_uint8(uint8_t *mat, int m, int n)
+{
+	int i, j;
+	for (i = 0; i < m; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			printf("%d ", *(mat + i * n + j));
+		}
+		printf("\n");
+	}
+}
+
+void mat_printf_uint16(uint16_t *mat, int m, int n)
+{
+	int i, j;
+	for (i = 0; i < m; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			printf("%d ", *(mat + i * n + j));
+		}
+		printf("\n");
+	}
+}
+
+void mat_printf_uint32(uint32_t *mat, int m, int n)
+{
+	int i, j;
+	for (i = 0; i < m; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			printf("%d ", *(mat + i * n + j));
 		}
 		printf("\n");
 	}
@@ -83,6 +131,21 @@ void mm_sub(double *a, double *b, double *c, int m, int n)
 		for (j = 0; j < n; j++)
 		{
 			c[i*n + j] = a[i*n + j] - b[i*n + j];
+		}
+	}
+}
+
+void mm_sub_f32(float *a, float *b, float *c, uint16_t m, uint16_t n)
+{
+	uint16_t i, j;
+	uint32_t idx, x_idx;
+	for (i = 0; i < m; i++)
+	{
+		x_idx = i * n;
+		for (j = 0; j < n; j++)
+		{
+			idx = x_idx + j;
+			c[idx] = a[idx] - b[idx];
 		}
 	}
 }

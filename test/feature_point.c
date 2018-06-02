@@ -1,7 +1,7 @@
 #include "file_wr.h"
 #include "feature_point.h"
 
-void write_feature_point_data_to_file(char *str,feature_point_t *point)
+void write_feature_point_data_to_file(char *str,feature_point_s *point)
 {
 	FILE *fp = fopen(str, "w+");
 	if (fp == NULL)
@@ -18,6 +18,6 @@ void write_feature_point_data_to_file(char *str,feature_point_t *point)
 void test_feature_point()
 {
 	char str[] = "feature_point.dat";
-	feature_point_t point;
+	feature_point_s point;
 	write_feature_point_data_to_file(str,&point);
 }

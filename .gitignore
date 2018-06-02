@@ -280,3 +280,7 @@ __pycache__/
 /test/image_t1.dat
 /test/image_t.dat
 /test/image.dat
+/test/1d_x_filter.dat
+/test/y_filter.dat
+/test/x_filter.dat
+/test/raw.dat

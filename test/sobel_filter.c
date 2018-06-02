@@ -4,7 +4,7 @@
 int8_t gx[9] = { -1,0,1,-2,0,2,-1,0,1 };
 int8_t gy[9] = { -1,-2,-1,0,0,0,1,2,1 };
 
-void calc_sobel_gx(image_t *img,image_t *img1,int8_t *kernel)
+void calc_sobel_gx(image_s *img,image_s *img1,int8_t *kernel)
 {
 	int x, y;
 	int ix1, ix2, ix3;
@@ -12,12 +12,12 @@ void calc_sobel_gx(image_t *img,image_t *img1,int8_t *kernel)
 	int tmp;
 	uint8_t *img_buf = (uint8_t *)img->buf;
 	int16_t *img1_buf = (int16_t *)img1->buf;
-	for (x = 1; x < img->w - 1; x++)
+	for (x = 1; x < img->rows - 1; x++)
 	{
-		ix1 = (x - 1)*img->h;
-		ix2 = x * img->h;
-		ix3 = (x + 1)*img->h;
-		for (y = 1; y < img->h - 1; y++)
+		ix1 = (x - 1)*img->cols;
+		ix2 = x * img->cols;
+		ix3 = (x + 1)*img->cols;
+		for (y = 1; y < img->cols - 1; y++)
 		{
 			t0 = ix1 + y - 1;
 			t1 = ix2 + y - 1;
@@ -28,18 +28,18 @@ void calc_sobel_gx(image_t *img,image_t *img1,int8_t *kernel)
 			tmp = -img_buf[t0] - 2 * img_buf[t1] - img_buf[t2] + img_buf[t3] + 2 * img_buf[t4] + img_buf[t5];
 			if (tmp < 0)
 			{
-				img1_buf[(x - 1)*img1->h + (y - 1)] = -tmp;
+				img1_buf[(x - 1)*img1->cols + (y - 1)] = -tmp;
 			}
 			else
 			{
-				img1_buf[(x - 1)*img1->h + (y - 1)] = tmp;
+				img1_buf[(x - 1)*img1->cols + (y - 1)] = tmp;
 			}
 
 		}
 
 	}
 }
-void calc_sobel_gy(image_t *img, image_t *img1,int8_t *kernel)
+void calc_sobel_gy(image_s *img, image_s *img1,int8_t *kernel)
 {
 	int x, y;
 	int ix1, ix2;
@@ -47,11 +47,11 @@ void calc_sobel_gy(image_t *img, image_t *img1,int8_t *kernel)
 	int tmp;
 	uint8_t *img_buf = (uint8_t *)img->buf;
 	int16_t *img1_buf = (int16_t *)img1->buf;
-	for (x = 1; x < img->w - 1; x++)
+	for (x = 1; x < img->rows - 1; x++)
 	{
-		ix1 = (x - 1)*img->h;
-		ix2 = (x + 1)*img->h;
-		for (y = 1; y < img->h - 1; y++)
+		ix1 = (x - 1)*img->cols;
+		ix2 = (x + 1)*img->cols;
+		for (y = 1; y < img->cols - 1; y++)
 		{
 			t0 = ix1 + y - 1;
 			t1 = t0 + 1;
@@ -62,42 +62,42 @@ void calc_sobel_gy(image_t *img, image_t *img1,int8_t *kernel)
 			tmp = -img_buf[t0] - 2 * img_buf[t1] - img_buf[t2] + img_buf[t3] + 2 * img_buf[t4] + img_buf[t5];
 			if (tmp < 0)
 			{
-				img1_buf[(x - 1)*img1->h + (y - 1)] = -tmp;
+				img1_buf[(x - 1)*img1->cols + (y - 1)] = -tmp;
 			}
 			else
 			{
-				img1_buf[(x - 1)*img1->h + (y - 1)] = tmp;
+				img1_buf[(x - 1)*img1->cols + (y - 1)] = tmp;
 			}
 
 		}
 	}
 }
-void calc_sobel_g(image_t *dx,image_t *dy, image_t *dst)
+void calc_sobel_g(image_s *dx,image_s *dy, image_s *dst)
 {
 	int i, j;
 	int16_t *dx_buf = (int16_t *)dx->buf;
 	int16_t *dy_buf = (int16_t *)dy->buf;
 	uint8_t *dst_buf = (uint8_t *)dst->buf;
 	int16_t tmp = 0;
-	for (i = 0; i < dst->w; i++)
+	for (i = 0; i < dst->rows; i++)
 	{
-		for (j = 0; j < dst->h; j++)
+		for (j = 0; j < dst->cols; j++)
 		{
-			tmp = dx_buf[i*dx->h + j] + dy_buf[i*dy->h + j];
+			tmp = dx_buf[i*dx->cols + j] + dy_buf[i*dy->cols + j];
 			if (tmp > 255)
 			{
 				tmp = 255;
 			}
-			dst_buf[i*dst->h + j] = (uint8_t)tmp;
+			dst_buf[i*dst->cols + j] = (uint8_t)tmp;
 		}
 	}
 }
-void sobel_filter(image_t *img,image_t *dst,int8_t *x_kernel,int8_t *y_kernel)
+void sobel_filter(image_s *img,image_s *dst,int8_t *x_kernel,int8_t *y_kernel)
 {
 	char str[] = "sobel_gx_test.dat";
-	image_t image_dx, image_dy;
-	image_create(&image_dx, img->w - 2, img->h - 2, IMAGE_GRADIENT);
-	image_create(&image_dy, img->w - 2, img->h - 2, IMAGE_GRADIENT);
+	image_s image_dx, image_dy;
+	image_create(&image_dx, img->rows - 2, img->cols - 2, IMAGE_GRADIENT);
+	image_create(&image_dy, img->rows - 2, img->cols - 2, IMAGE_GRADIENT);
 	calc_sobel_gx(img, &image_dx, x_kernel);
 	write_image_data_to_file_int16(str, &image_dx);
 	calc_sobel_gy(img, &image_dy, y_kernel);
@@ -111,7 +111,7 @@ void test_sobel()
 	printf("test sobel filter\n");
 	int m = 480;
 	int n = 640;
-	image_t image, image_dx, image_dy,dst;
+	image_s image, image_dx, image_dy,dst;
 	image_create(&image, m, n, IMAGE_GRAYSCALE);
 	image_create(&dst, m - 2, n - 2, IMAGE_GRADIENT);
 	image_create(&image_dx, m - 2, n - 2, IMAGE_GRADIENT);
@@ -140,7 +140,7 @@ void test_sobel()
 	printf("test sobel filter\n");
 	int m = 480;
 	int n = 640;
-	image_t image,dst;
+	image_s image,dst;
 	image_create(&image, m, n, IMAGE_GRAYSCALE);
 	image_create(&dst, m - 2, n - 2, IMAGE_GRADIENT);
 	FILE *fp = fopen("data.dat", "r");

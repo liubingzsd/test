@@ -60,6 +60,18 @@
     <ClInclude Include="match.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="kd_tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="image_filter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sift_test.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -89,16 +101,10 @@
     <ClCompile Include="image.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="filter_2d.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="kernel.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="sobel_filter.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="harris_test.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="harris_corner.c">
@@ -108,6 +114,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="match.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="kd_tree.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="image_filter.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="sift_test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mat.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

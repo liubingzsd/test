@@ -2,21 +2,21 @@
 #include "match.h"
 #include "image.h"
 
-uint32_t calc_image_teplate_diff_grayscale_l1(sad_t *sad,image_t *img,image_t *img_t,uint16_t x_s,uint16_t y_s)
+uint32_t calc_image_teplate_diff_grayscale_l1(sad_t *sad,image_s *img,image_s *img_t,uint16_t x_s,uint16_t y_s)
 {
 	uint8_t *img_buf = (uint8_t *)img->buf;
 	uint8_t *img_t_buf = (uint8_t *)img_t->buf;
 	uint16_t i, j,idx,idy; 
 	int tmp;
 	uint32_t img_index,img_t_index, diff = 0;
-	idx = x_s + img_t->w;
-	idy = y_s + img_t->h;
+	idx = x_s + img_t->rows;
+	idy = y_s + img_t->cols;
 	for (i = x_s; i < idx; i++)
 	{
 		for (j = y_s; j < idy; j++)
 		{
-			img_index = i * img->h + j;
-			img_t_index = (i - x_s) * img_t->h + (j - y_s);
+			img_index = i * img->cols + j;
+			img_t_index = (i - x_s) * img_t->cols + (j - y_s);
 			tmp = img_buf[img_index] - img_t_buf[img_t_index];
 			if (tmp < 0)
 			{
@@ -33,19 +33,19 @@ uint32_t calc_image_teplate_diff_grayscale_l1(sad_t *sad,image_t *img,image_t *i
 }
 void sad_matcher_init(sad_t *sad)
 {
-	sad->sad_min_val = 1e5;
+	sad->sad_min_val = (uint32_t)1e5;
 }
 
 
 
-void sad_matcher(sad_t *sad,image_t *img, image_t *img_t)
+void sad_matcher(sad_t *sad,image_s *img, image_s *img_t)
 {
 	uint8_t *img_buf = (uint8_t *)img->buf;
 	uint8_t *img_t_buf = (uint8_t *)img_t->buf;
 	uint32_t i, j,idx,idy;
 	uint32_t sad_val = 0;
-	idx = img->w - img_t->w;
-	idy = img->h - img_t->h;
+	idx = img->rows - img_t->rows;
+	idy = img->cols - img_t->cols;
 	for (i = 0; i < idx; i++)
 	{
 		for (j = 0; j < idy; j++)
@@ -63,22 +63,22 @@ void sad_matcher(sad_t *sad,image_t *img, image_t *img_t)
 	}
 
 }
-uint32_t ssad_calc_img_t_avg(image_t *img_t)
+uint32_t ssad_calc_img_t_avg(image_s *img_t)
 {
 	uint32_t i,j,avg_img_t = 0;
 	uint8_t *img_t_buf = (uint8_t *)img_t->buf;
-	for (i = 0; i < img_t->w; i++)
+	for (i = 0; i < img_t->rows; i++)
 	{
-		for (j = 0; j < img_t->h; j++)
+		for (j = 0; j < img_t->cols; j++)
 		{
-			avg_img_t += img_t_buf[i*img_t->h + j];
+			avg_img_t += img_t_buf[i*img_t->cols + j];
 		}
 	}
-	avg_img_t /= (uint32_t)((float)(img_t->w*img_t->h));
+	avg_img_t /= (uint32_t)((float)(img_t->rows*img_t->cols));
 	return avg_img_t;
 }
 
-uint32_t ssad_calc_img_avg(image_t *img, int x, int y,int x_l,int y_l)
+uint32_t ssad_calc_img_avg(image_s *img, int x, int y,int x_l,int y_l)
 {
 	int i, j, avg_img = 0;
 	uint8_t *img_buf = (uint8_t *)img->buf;
@@ -93,31 +93,31 @@ uint32_t ssad_calc_img_avg(image_t *img, int x, int y,int x_l,int y_l)
 	return avg_img;
 }
 
-void ssad_calc_img_diff(image_t *dif,image_t *img_t,uint32_t avg_img)
+void ssad_calc_img_diff(image_s *dif,image_s *img_t,uint32_t avg_img)
 {
 	uint32_t i, j, index;
 	int16_t *dif_buf = (int16_t *)dif->buf;
 	uint8_t *img_t_buf = (uint8_t *)img_t->buf;
-	for (i = 0; i < img_t->w; i++)
+	for (i = 0; i < img_t->rows; i++)
 	{
-		for (j = 0; j < img_t->h; j++)
+		for (j = 0; j < img_t->cols; j++)
 		{
-			index = i * img_t->h + j;
+			index = i * img_t->cols + j;
 			dif_buf[index] = img_t_buf[index] - avg_img;
 		}
 	}
 }
-uint32_t ssad_calc_eps(image_t *img,image_t *img_t,int x,int y)
+uint32_t ssad_calc_eps(image_s *img,image_s *img_t,int x,int y)
 {
 	uint32_t i, j,index,index_t,tmp,eps = 0;
 	int16_t *img_buf = (int16_t *)img->buf;
 	int16_t *img_t_buf = (int16_t *)img_t->buf;
-	for (i = x; i < x+img->w;i++)
+	for (i = x; i < x+img->rows;i++)
 	{
-		for (j = y; j < y+img->h; j++)
+		for (j = y; j < y+img->cols; j++)
 		{
-			index = i * img->h + j;
-			index_t = (i - x)*img_t->h + (j - y);
+			index = i * img->cols + j;
+			index_t = (i - x)*img_t->cols + (j - y);
 			tmp = img_buf[index] - img_t_buf[index_t];
 			if (tmp < 0)
 			{
@@ -135,23 +135,23 @@ void ssad_matcher_init(ssad_t *ssad,int thres)
 {
 	ssad->thres = thres;
 }
-void ssad(ssad_t *ssad,image_t *img,image_t *img_t)
+void ssad(ssad_t *ssad,image_s*img,image_s *img_t)
 {
 	uint8_t *img_buf = (uint8_t *)img->buf;
 	uint8_t *img_t_buf = (uint8_t *)img_t->buf;
 	uint32_t avg_img_t = 0, avg_img = 0;
 	uint32_t i, j, eps = 0, cnt = 0;
-	image_t image, image_t;
-	image_create(&image, img_t->w, img_t->h, IMAGE_GRAYSCALE);
-	image_create(&image_t, img_t->w, img_t->h, IMAGE_GRAYSCALE);
-	avg_img_t = ssad_calc_img_t_avg(img_t,0,0);
+	image_s image, image_t;
+	image_create(&image, img_t->rows, img_t->rows, IMAGE_GRAYSCALE);
+	image_create(&image_t, img_t->cols, img_t->cols, IMAGE_GRAYSCALE);
+	avg_img_t = ssad_calc_img_t_avg(img_t);
 	ssad_calc_img_diff(&image_t,img_t,avg_img_t);
-	for (i = 0; i < img->w - img_t->w; i++)
+	for (i = 0; i < img->rows - img_t->rows; i++)
 	{
-		for (j = 0; j < img->h - img_t->h; j++)
+		for (j = 0; j < img->cols - img_t->cols; j++)
 		{
 			eps = 0,cnt = 0;
-			avg_img = ssad_calc_img_avg(img,i,j,img_t->w,img_t->h);
+			avg_img = ssad_calc_img_avg(img,i,j,img_t->rows,img_t->cols);
 			ssad_calc_img_diff(&image,img,avg_img);
 			if (eps < ssad->thres)
 			{
@@ -179,7 +179,7 @@ void test_sad()
 	int n = 640;
 	int m_t = 100;
 	int n_t = 100;
-	image_t image, image_t;
+	image_s image, image_t;
 	image_create(&image, m, n, IMAGE_GRAYSCALE);
 	image_create(&image_t, m_t, n_t, IMAGE_GRAYSCALE);
 	FILE *fp = fopen("image.dat", "r+");

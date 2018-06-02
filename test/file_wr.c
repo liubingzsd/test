@@ -9,7 +9,7 @@ void read_data_from_file_float(FILE *fp, float *data, int m, int n)
 	{
 		for (j = 0; j < n; j++)
 		{
-			fscanf_s(fp, "%f", data + i * n + j);
+			fscanf_s(fp, "%f ", data + i * n + j);
 		}
 	}
 }

@@ -5,9 +5,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "feature_point.h"
+
 typedef struct
 {
-	feature_point_t point;
+	feature_point_s point;
 	float response_max_val;
 	float thres;
 	float k;
